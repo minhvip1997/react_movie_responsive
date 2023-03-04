@@ -3,6 +3,7 @@ import { BrowserRouter, Link, useLocation, useNavigate, useSearchParams } from "
 import { useEffect, useState ,useRef } from "react"
 import { mergeClassName } from "../utils"
 import { IoIosSearch } from 'react-icons/io'
+import { SearchResult } from "../components/search-result"
 
 const MENU_CLASS = `p-1.5 hover:bg-primary rounded-md`
 const MENU_CLASS_ACTIVE = `bg-primary`
@@ -15,11 +16,20 @@ const Header =()=>{
     const [pathName, setPathName] = useState('')
     const [keyword, setKeyword] = useState('')
     const pathNameRef = useRef('')
+    const defaultKeyword = useRef('')
+    const [isSearchFocus, setSearchFocus] = useState(false)
+    const searchRef = useRef<HTMLInputElement>(null)
 
-    useEffect(()=>{
-        setPathName(location.pathname)
-        pathNameRef.current = location.pathname
-    },[location.pathname])
+    
+
+    const gotoSearchPage =()=>{
+        if(keyword){
+            // console.log('keyword', keyword);
+            navigate(`/search?q=${keyword}`)
+            setSearchFocus(false)
+            searchRef.current?.blur()
+        }
+    }
 
     const getMenuClass =(path:string)=>{
         if(path === pathName){
@@ -27,6 +37,28 @@ const Header =()=>{
         }
         return mergeClassName(MENU_CLASS,'')
     }
+    const onWindowClick=()=>{
+        setSearchFocus(false)
+        initKeyWord()
+    }
+
+    const initKeyWord=()=>{
+        if(pathNameRef.current === '/search'){
+            setKeyword(params.get('q') || '')
+        }else{
+            setKeyword('')
+        }
+    }
+
+    useEffect(()=>{
+        setPathName(location.pathname)
+        pathNameRef.current = location.pathname
+        initKeyWord()
+    },[location.pathname])
+
+    useEffect(()=>{
+        window.addEventListener('click', ()=> onWindowClick())
+    },[])
 
     return(
         <div className="bg-header">
@@ -50,11 +82,26 @@ const Header =()=>{
                         items-center
                         p-1
                         flex-[0.5]
-                        focus-within:border
+                        focus-within:border-primary
+                        relative
                         "
                         >
-                <input type="text" className="bg-transparent outline-0 flex-1" placeholder="Search..."/>
+                <input 
+                 onClick={(e)=>{
+                    e.stopPropagation()
+                    setSearchFocus(true)
+                 }}
+                 onKeyDown={e=>e.key === 'Enter' ? gotoSearchPage() : ''}
+                 onInput={e=>setKeyword(e.currentTarget.value)}
+                 value={keyword}
+                 type="text"
+                 className="bg-transparent outline-0 flex-1"
+                 placeholder="Search..."/>
                 <IoIosSearch size={18}></IoIosSearch>
+                {
+                    isSearchFocus ? (<SearchResult keyword={keyword} goToSearchPage={gotoSearchPage}></SearchResult>) 
+                    : ('')
+                }
             </div>
             </Container>
             
