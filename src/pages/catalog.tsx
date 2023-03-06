@@ -1,5 +1,10 @@
-export const Catalog=()=>{
+import { MediaType } from "../type"
+
+interface Props{
+    type: MediaType | 'search'
+}
+export const Catalog=(props: Props)=>{
     return(
-        <div>Catalog</div>
+        <div>{props.type}</div>
     )
 }

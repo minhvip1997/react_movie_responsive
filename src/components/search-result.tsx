@@ -16,7 +16,7 @@ export const SearchResult =(props:Props)=>{
         for(let i=0; i<6;i++){
             arrs.push({
                 id: i,
-                title: 'lorem',
+                title: 'lorem ipsum dolor sit amet mindhasdhsal hdasjdhalksdhaskl kdhsalkbdasklbalkfalks',
                 desciption: '',
                 coverPath: '',
                 genreIds:[1,2,3,4,5,6],
