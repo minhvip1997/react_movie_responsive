@@ -5,7 +5,7 @@ import { mergeClassName } from "../utils"
 import { IoIosSearch } from 'react-icons/io'
 import { SearchResult } from "../components/search-result"
 
-const MENU_CLASS = `p-1.5 hover:bg-primary rounded-md`
+const MENU_CLASS = `p-1.5 hover:bg-primary rounded-md mobile:px-6 py-1`
 const MENU_CLASS_ACTIVE = `bg-primary`
 
 const Header =()=>{
@@ -25,6 +25,7 @@ const Header =()=>{
     const gotoSearchPage =()=>{
         if(keyword){
             // console.log('keyword', keyword);
+            defaultKeyword.current = keyword
             navigate(`/search?q=${keyword}`)
             setSearchFocus(false)
             searchRef.current?.blur()
@@ -44,7 +45,7 @@ const Header =()=>{
 
     const initKeyWord=()=>{
         if(pathNameRef.current === '/search'){
-            setKeyword(params.get('q') || '')
+            setKeyword(defaultKeyword.current)
         }else{
             setKeyword('')
         }
@@ -53,11 +54,15 @@ const Header =()=>{
     useEffect(()=>{
         setPathName(location.pathname)
         pathNameRef.current = location.pathname
+        defaultKeyword.current = params.get('q') || ''
         initKeyWord()
     },[location.pathname])
 
     useEffect(()=>{
-        window.addEventListener('click', ()=> onWindowClick())
+        window.addEventListener('click', onWindowClick)
+        return ()=>{
+            window.removeEventListener('click', onWindowClick)
+        }
     },[])
 
     return(
@@ -69,7 +74,9 @@ const Header =()=>{
                         <Link to={'/'}>Movielia</Link>
                     </h1>
                     {/* menu */}
-                    <div className=" pt-1 flex items-center gap-1.5">
+                    <div className=" pt-1 flex items-center gap-1.5 mobile:fixed 
+                    mobile:bottom-0 mobile:left-0 mobile:right-0 mobile:justify-center
+                     mobile:py-3 mobile:bg-header mobile:gap-6">
                         <Link className={getMenuClass('/movies')} to={'/movies'}>Movies</Link>
                         <Link className={getMenuClass('/tv')} to={'/tv'}>TV</Link>
                     </div>
