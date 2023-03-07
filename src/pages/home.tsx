@@ -3,6 +3,7 @@ import { Film } from "../interfaces"
 import { useState, useEffect } from "react"
 import { TrendingsHero } from "../components/trendings-hero"
 import { Slider } from "../components/slider/slider"
+import { Card } from "../components/card"
 
 export const Home=()=>{
     const [trendings, setTrending] = useState<Film[]>([])
@@ -40,8 +41,8 @@ export const Home=()=>{
             </Section>
             <Section title="Theater">
                 <Slider className="slick-hero" autoplay={true} slidesToScroll={5} slidesToShow={5}>
-                    {trendings.map((film,i)=>(
-                        <TrendingsHero film={film} key={i}></TrendingsHero>
+                    {theaters.map((film,i)=>(
+                        <Card film={film} key={i}></Card>
                     ))}
                 </Slider>
             </Section>
